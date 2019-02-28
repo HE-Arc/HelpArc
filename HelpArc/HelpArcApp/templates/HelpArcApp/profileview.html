@@ -1,0 +1,27 @@
+{% extends 'HelpArcApp/base.html' %}
+{% load static %}
+{% block title %}Your Profile{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-2">
+            <div class="card" style="width: 18rem;">
+                <img class="card-img-top border-bottom rounded-circle" src="{% static 'HelpArc/img/default-user-image.png' %}" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">Nabil Ouerhani</h5>
+                    <p class="card-text">Professor</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg">
+            Show all levels of knowledge
+
+            <button class="btn " >Ask for Help!</help>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

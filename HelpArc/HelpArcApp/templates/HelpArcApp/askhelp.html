@@ -1,0 +1,29 @@
+{% extends 'HelpArcApp/base.html' %}
+{% load static %}
+{% block title %}Your Profile{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-2">
+            <div class="card border-0" style="width: 18rem;">
+                <img class="card-img-top rounded-circle" src="{% static 'HelpArc/img/default-user-image.png' %}" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">Steve Visinand</h5>
+                    <p class="card-text">Research assistant</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg">
+            <form>
+                Title: <input type="text"> <br>
+                Message: <textarea></textarea>
+                <input class="" type="submit">
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
