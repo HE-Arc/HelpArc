@@ -50,6 +50,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+AUTH_USER_MODEL = 'HelpArcApp.CustomUser'
+
 
 ROOT_URLCONF = 'HelpArc.urls'
 
