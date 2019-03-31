@@ -94,8 +94,13 @@ def completeprofile(request):
             for skill in formSet:
                 #Saving in the skill models	
                 preSaveSkill = skill.save(commit=False)
-                preSaveSkill.userId = current_user
-                preSaveSkill.save()
+                s = SkillLevels.objects.filter(userId=current_user, technologyId=preSaveSkill.technologyId)
+                print(len(s))
+                if len(s) > 0:
+                    s.update(level=preSaveSkill.level)
+                else:
+                    preSaveSkill.userId = current_user
+                    preSaveSkill.save()
             context['form'] = SkillsFormSet(request.POST)
             context['UserTitleForm'] = UserTitleForm(request.POST, instance=current_user)
             return render(request, 'completeprofile.html', context)

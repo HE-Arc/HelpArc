@@ -16,7 +16,7 @@ class SkillLevels(models.Model):
     technologyId = models.ForeignKey('Technology', on_delete=models.CASCADE, null=True)
     level = models.IntegerField()
     def __str__(self):
-        return self.technologyId.name + " " + self.level
+        return self.userId.username + " : " + self.technologyId.name + " -> " + str(self.level)
 
 class Message(models.Model):
     content = models.TextField()
