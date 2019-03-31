@@ -49,20 +49,21 @@ def askhelp(request, id):
 def completeprofile(request):
     try:
         current_user = request.user
+        profile = Profile.objects.filter(user=request.user).first()
         #user = CustomUser.objects.get(user_name=current_user)
     except Exception:
         return render(request, 'users/login.html', {})
     context = {}    
     SkillsFormSet = modelformset_factory(SkillLevels, form=SkillsForm)
-    titleForm = UserTitleForm(instance=current_user)
+    titleForm = UserTitleForm(instance=profile)
     if request.method == 'POST':
         
         # create a form instance and populate it with data from the request:
         formSet = SkillsFormSet(request.POST)
-        titleForm = UserTitleForm(request.POST, instance=current_user)
+        titleForm = UserTitleForm(request.POST, instance=profile)
         #Checking the if the form is valid
         if formSet.is_valid() and titleForm.is_valid():
-            current_user.titleId = titleForm['titleId']
+            titleForm.save()
             #To save we have loop through the formset
             for skill in formSet:
                 #Saving in the skill models	
