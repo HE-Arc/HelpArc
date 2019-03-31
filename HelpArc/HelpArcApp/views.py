@@ -39,11 +39,37 @@ def profile(request):
 # askhelp/user_id
 def askhelp(request, id):
     requested = Profile.objects.get(id=id)
-    if requested.accountLevel == 1 and requested.titleId is None:
+    context = {}
+    '''if requested.accountLevel == 1 and requested.titleId is None:
         context = {'info': "bite"}
     else:    
         context = {'info': "ouais"}
-    return render(request, 'askhelp.html', context)
+    return render(request, 'askhelp.html', context)'''
+    requestForm = RequestForm()
+    messageForm = MessageForm()
+    if request.method == 'GET':
+        context = {}
+        context['requestForm'] = requestForm
+        context['messageForm'] = messageForm
+        return render(request, 'askhelp.html', context)
+    if request.method == 'POST':
+        requestForm = RequestForm(request.POST)
+        messageForm = MessageForm(request.POST)
+        if requestForm.is_valid and messageForm.is_valid:
+            helpRequest = requestForm.save(commit=False)
+            helpRequest.studentId = request.user
+            helpRequest.helperId = requested.user
+            helpRequest.read = False
+            helpRequest.closed = False
+            helpRequest.save()
+
+            message = messageForm.save(commit=False)
+            message.requestId = helpRequest
+            message.save()
+        return render(request, 'index.html', context)
+    return render(request, 'completeprofile.html', context)
+
+
 
 @login_required
 def completeprofile(request):

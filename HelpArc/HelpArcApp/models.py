@@ -15,12 +15,16 @@ class SkillLevels(models.Model):
     userId = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     technologyId = models.ForeignKey('Technology', on_delete=models.CASCADE, null=True)
     level = models.IntegerField()
+    def __str__(self):
+        return self.technologyId.name + " " + self.level
 
 class Message(models.Model):
     content = models.TextField()
     date = models.DateField(auto_now=True)
     requestId = models.ForeignKey('Request', on_delete=models.CASCADE, null=True)
     senderId = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    def __str__(self):
+        return self.content
 
 class Request(models.Model):
     title = models.CharField(max_length=50)
@@ -30,6 +34,8 @@ class Request(models.Model):
     studentId = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='student')
     helperId = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='helper')
     technologyId = models.ForeignKey('Technology', on_delete=models.SET_NULL, null=True)
+    def __str__(self):
+        return self.title
 
 class Title(models.Model):
     name = models.CharField(max_length=50)
@@ -39,4 +45,6 @@ class Title(models.Model):
 
 class Class(models.Model):
     name = models.CharField(max_length=10)
+    def __str__(self):
+        return self.name
 
