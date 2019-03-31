@@ -5,6 +5,12 @@ from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from users.models import Profile
 from django.contrib.auth.models import User
+from .forms import SkillsForm, UserTitleForm, MessageForm, RequestForm
+from django.forms import formset_factory
+from django.forms.models import modelformset_factory
+from .models import Technology, SkillLevels
+from django.http import JsonResponse
+
 
 import logging
 
@@ -41,5 +47,39 @@ def askhelp(request, id):
 
 @login_required
 def completeprofile(request):
-    context = {}
-    return render(request, 'completeprofile.html', context)
+    try:
+        current_user = request.user
+        #user = CustomUser.objects.get(user_name=current_user)
+    except Exception:
+        return render(request, 'users/login.html', {})
+    context = {}    
+    SkillsFormSet = modelformset_factory(SkillLevels, form=SkillsForm)
+    titleForm = UserTitleForm(instance=current_user)
+    if request.method == 'POST':
+        
+        # create a form instance and populate it with data from the request:
+        formSet = SkillsFormSet(request.POST)
+        titleForm = UserTitleForm(request.POST, instance=current_user)
+        #Checking the if the form is valid
+        if formSet.is_valid() and titleForm.is_valid():
+            current_user.titleId = titleForm['titleId']
+            #To save we have loop through the formset
+            for skill in formSet:
+                #Saving in the skill models	
+                preSaveSkill = skill.save(commit=False)
+                preSaveSkill.userId = current_user
+                preSaveSkill.save()
+            context['form'] = SkillsFormSet(request.POST)
+            context['UserTitleForm'] = UserTitleForm(request.POST, instance=current_user)
+            return render(request, 'completeprofile.html', context)
+        else:            
+            context={
+                    'contact_form': SkillsFormSet(),
+                    'error' : formSet.errors,
+                    }
+            return render(request, 'completeprofile.html', context)
+        
+    elif request.method == 'GET':
+        context['form'] = SkillsFormSet(queryset=SkillLevels.objects.filter(userId=current_user))
+        context['UserTitleForm'] = titleForm
+        return render(request, 'completeprofile.html', context)

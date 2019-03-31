@@ -8,6 +8,8 @@ from django.contrib.auth.models import User
 class Technology(models.Model):
     name = models.CharField(max_length=30)
     logo = models.ImageField()
+    def __str__(self):
+        return self.name
 
 class SkillLevels(models.Model):
     userId = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -31,6 +33,9 @@ class Request(models.Model):
 
 class Title(models.Model):
     name = models.CharField(max_length=50)
+    def __str__(self):
+        return self.name
+
 
 class Class(models.Model):
     name = models.CharField(max_length=10)

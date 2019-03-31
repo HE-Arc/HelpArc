@@ -1,12 +1,23 @@
 <html>
 
 <head>
+
+  <script
+  src="https://code.jquery.com/jquery-3.3.1.js"
+  integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+  crossorigin="anonymous"></script>
+
   <title>{% block title %}{% endblock %}</title>
 
   {% load bootstrap4 %}
   {% bootstrap_css %}
   {% bootstrap_javascript jquery='full' %}
   {% load static %}
+
+    {{ form.media.css }}
+{{ form.media.js }}
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 
   <link rel="stylesheet" type="text/css" href="{% static 'HelpArc/custom.css' %}">
 </head>
@@ -65,7 +76,6 @@
   </div>
   {% endif %}
   
-  <script src="{% static 'HelpArc/jquery.min.js' %}"></script>
   <script src="{% static 'HelpArc/bootstrap.min.js' %}"></script>
   {% block javascript %}{% endblock %}
 </body>
