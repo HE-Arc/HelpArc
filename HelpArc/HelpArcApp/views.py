@@ -22,7 +22,7 @@ def index(request):
         #create message to ask for completion
 
     context = {'users': most_requested}
-    return render(request, 'HelpArcApp/index.html', context)
+    return render(request, 'index.html', context)
 
 @login_required
 def profile(request):
@@ -37,7 +37,7 @@ def askhelp(request, id):
         context = {'info': "bite"}
     else:    
         context = {'info': "ouais"}
-    return render(request, 'HelpArcApp/askhelp.html', context)
+    return render(request, 'askhelp.html', context)
 
 @login_required
 def completeprofile(request):
