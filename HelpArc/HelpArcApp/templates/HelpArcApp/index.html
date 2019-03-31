@@ -4,10 +4,9 @@
 
 {% block content %}
 
-<form class="m-5" style="width: 100%;">
+<form class="m-4" style="width: 100%;">
     <h3>Enter the technologies you need help with !</h3>
     <input type="text" style="width: 50%"><img src="{% static 'HelpArc/img/search2.png' %}" alt="Search icon" width="50px" class="m-2" placeholder="Search for technologies"></img>
-    (input is an multiselect dropdown https://selectize.github.io/selectize.js/ ou https://select2.org/selections)
 </form>
 
 <hr/>
@@ -18,35 +17,11 @@
 
 <div class="container m-3">
     <div class="row">
-        <div class="col-sm">
-            <div class="card" style="width: 18rem;">
-                <img class="card-img-top border-bottom rounded-circle" src="{% static 'HelpArc/img/default-user-image.png' %}" alt="Card image cap">
-                <div class="card-body">
-                    <h5 class="card-title">Nabil Ouerhani</h5>
-                    <p class="card-text">Professor</p>
-                </div>
-            </div>
-        </div>
+     {% for user in users %}
+        {% include './profile_card.html' with firstname=user.first_name lastname=user.last_name picture=user.profile.picture.url title=user.profile.titleId only %}
+     {% endfor %}
 
-      <div class="col-sm">
-            <div class="card bg-white" style="width: 18rem;" style="background-color: black;">
-                <img class="card-img-top border-bottom rounded-circle" src="{% static 'HelpArc/img/default-user-image.png' %}" alt="Card image cap">
-                <div class="card-body">
-                    <h5 class="card-title">Steve Visinand</h5>
-                    <p class="card-text">Research assistant</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-sm">
-            <div class="card" style="width: 18rem;">
-                <img class="card-img-top rounded-circle border-bottom" src="{% static 'HelpArc/img/default-user-image.png' %}" alt="Card image cap">
-                <div class="card-body">
-                    <h5 class="card-title">David Grünenwald</h5>
-                    <p class="card-text">Professor</p>
-                </div>
-            </div>
-        </div>
+    </div>
 
 </div>
 

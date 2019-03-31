@@ -1,0 +1,69 @@
+{% extends 'HelpArcApp/base.html' %}
+{% load static %}
+{% block title %}Your Profile{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-2">
+            <div class="list-group" style="margin-top: 60%;">
+                <button id="helper" type="button" class="view-button list-group-item list-group-item-action">Helpers requests</button>
+                <button id="technology" type="button" class="view-button list-group-item list-group-item-action">Technologies</button>
+                <button id="class" type="button" class="view-button list-group-item list-group-item-action">Classes</button>
+            </div>
+        </div>
+        <div id="admin-content" class="col-lg"></div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block javascript %}
+<script>
+    window.CSRF_TOKEN = "{{ csrf_token }}";
+
+    $( document ).ready(function() {
+        $("#helper").trigger("click")
+    });
+</script>
+
+
+<script>
+    $(".view-button").click(function () {
+        btn = $(this).attr('id')
+
+        switch(btn){
+            case 'class': url = '{% url 'get_classes' %}';
+                break;
+            case 'helper': url = '{% url 'get_helper' %}';
+                break;
+            case 'technology': url = '{% url 'get_technologies' %}';
+                break;
+            default: return;
+        }
+
+        $.ajax({
+            method: 'GET',
+            data: { },
+            url: url,
+            dataType: 'json',
+            success: function (data) {
+                if (data.result) 
+                {
+                    $("#admin-content").empty();
+                    $("#admin-content").append(data.html);
+                   //implement messages for user feedback
+                } 
+                else
+                {
+                    //message   
+                }
+            },
+            fail: function (data) {
+                alert("an error occured");
+            }
+        });
+    });
+</script>
+{% endblock javascript %}
+

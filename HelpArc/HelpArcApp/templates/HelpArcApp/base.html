@@ -14,20 +14,36 @@
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-danger static-top">
     <div class="container">
-      <a class="navbar-brand" href="#">HelpArc</a>
+      <a class="navbar-brand" href="{% url 'index' %}">HelpArc</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
+        {% if user.is_authenticated %}
           <li class="nav-item active">
-            <a class="nav-link" href="">Home
+            <a class="nav-link" href="{% url 'index' %}">Home
               <span class="sr-only">(current)</span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="">Profile</a>
+            <a class="nav-link" href="{% url 'profile' %}">Profil</a>
           </li>
+          {% if user.profile.accountLevel == 2 %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'admin_dashboard' %}">Dashboard admin</a>
+            </li>
+          {% endif %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'logout' %}">Déconnexion</a>
+          </li>
+        {% else %}
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'login' %}">Se connecter
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+        {% endif %}
         </ul>
       </div>
     </div>
@@ -49,7 +65,8 @@
   </div>
   {% endif %}
   
-  <script src="{% static 'HelpArc/jquery.slim.min.js' %}"></script>
+  <script src="{% static 'HelpArc/jquery.min.js' %}"></script>
   <script src="{% static 'HelpArc/bootstrap.min.js' %}"></script>
+  {% block javascript %}{% endblock %}
 </body>
 </html>

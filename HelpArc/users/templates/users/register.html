@@ -1,0 +1,22 @@
+{% extends "HelpArcApp/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="content-section p-5" style="text-align: left">
+        <form method="POST" enctype='multipart/form-data'>
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4 ">S'inscrire</legend>
+                {{ user_form|crispy }}
+                {{ profile_form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Valider</button>
+            </div>
+        </form>
+        <div class="border-top pt-3">
+            <small class="text-muted">
+                Vous possèdez déjà un compte? <a class="ml-2" href="{% url 'login' %}">Se connecter</a>
+            </small>
+        </div>
+    </div>
+{% endblock content %}
