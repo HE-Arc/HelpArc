@@ -58,7 +58,7 @@ ROOT_URLCONF = 'HelpArc.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'HelpArcApp/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

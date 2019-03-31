@@ -27,7 +27,7 @@ def index(request):
 @login_required
 def profile(request):
     context = {}
-    return render(request, 'HelpArcApp/profile.html', context)
+    return render(request, 'profile.html', context)
 
 @login_required
 # askhelp/user_id
@@ -42,4 +42,4 @@ def askhelp(request, id):
 @login_required
 def completeprofile(request):
     context = {}
-    return render(request, 'HelpArcApp/completeprofile.html', context)
+    return render(request, 'completeprofile.html', context)
