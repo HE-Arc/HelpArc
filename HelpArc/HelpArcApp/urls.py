@@ -12,4 +12,8 @@ urlpatterns = [
     path('profile', views.profile, name='profile'),
     path('askhelp/<id>', views.askhelp, name='askhelp'),
     path('completeprofile', views.completeprofile, name='completeprofile'),
+    path('helpRequest/<id>', views.helpRequest, name='helpRequest'),
+
 ]
+
+
