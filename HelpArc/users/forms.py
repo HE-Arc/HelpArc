@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .models import Profile
-from HelpArcApp.models import Technology, Class
+from HelpArcApp.models import Technology, Class, Title
 import copy
 
 class profileRegisterForm(forms.ModelForm):
@@ -32,4 +32,10 @@ class registerClass(forms.ModelForm):
     name = forms.CharField(required=True, label='Nom')
     class Meta():
         model = Class
+        fields = ('name',)
+
+class registerTitle(forms.ModelForm):
+    name = forms.CharField(required=True, label='Nom')
+    class Meta():
+        model = Title   
         fields = ('name',)
