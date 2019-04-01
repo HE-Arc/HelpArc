@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Index Page{% endblock %}
+
+{% block content %}
+
+<form class="m-4" style="width: 100%;">
+    <h3>Enter the technologies you need help with !</h3>
+    <input type="text" style="width: 50%"><img src="{% static 'HelpArc/img/search2.png' %}" alt="Search icon" width="50px" class="m-2" placeholder="Search for technologies"></img>
+</form>
+
+<hr/>
+
+<div class="m-2">
+<h2>Most Requested</h2>
+</div>
+
+<div class="container m-3">
+    <div class="row">
+     {% for user in users %}
+        {% include './profile_card.html' with firstname=user.first_name lastname=user.last_name picture=user.profile.picture.url title=user.profile.titleId only %}
+     {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

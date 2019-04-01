@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="content-section p-5" style="text-align: left">
+        <legend class="text-center mb-4 ">Afin de pouvoir utiliser notre site, vous devez être connecté.</legend>
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4 ">Se connecter</legend>
+                {{ form|crispy }}
+
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Valider</button>
+            </div>
+        </form>
+        <div class="border-top pt-3">
+            <small class="text-muted">
+                Vous ne possèdez pas de compte? <a class="ml-2" href="{% url 'register' %}">S'inscrire</a>
+            </small>
+        </div>
+    </div>
+{% endblock content %}

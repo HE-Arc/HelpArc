@@ -1,0 +1,89 @@
+{% if technologies %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+            <th scope="col">Nom</th>
+            <th scope="col">Image</th>
+            <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for technology in technologies %}
+            <tr id='{{ technology.id }}'>
+                <th>{{ technology.name }}</th>
+                <th>{{ technology.logo }}</th>
+                <th>
+                    <button id="d{{ technology.id }}" class="delete action-button" type="button">Supprimer</button> 
+                </th>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    There's no technologies
+{% endif %}
+
+<form action="{% url 'technology_add' %}" enctype='multipart/form-data' id='post-form'>
+    {% csrf_token %}
+    <fieldset class="form-group">
+        <legend class="border-bottom mb-4 ">Ajouter une technologie</legend>
+            {{ form }}
+    </fieldset>
+    <div class="form-group">
+        <button class="btn btn-outline-info" type="submit">Ajouter</button>
+    </div>
+</form>
+
+<script>
+    // Submit post on submit
+    $('#post-form').on('submit', function(event){
+        event.preventDefault();
+        console.log("form submitted!")  // sanity check
+        create_post();
+    });
+
+    function create_post() {
+        var form = $('#post-form');
+        var formdata = new FormData(form.get(0));
+
+        $.ajax({
+            url : "{% url 'technology_add' %}",
+            type : "POST",
+            data : formdata,
+            contentType: 'multipart/form-data',
+            processData: false,
+            contentType: false, 
+
+            success : function(json) {
+                console.log("worked");
+            },
+        });
+    };
+
+    $(".action-button").click(function () {
+        var tech = $(this).attr('id');
+        tech = tech.substring(1, tech.length);
+        console.log(tech)
+        $.ajax({
+            method: 'POST',
+            data: { csrfmiddlewaretoken: window.CSRF_TOKEN, 'id': tech},
+            url: '{% url 'technology_delete' %}',
+            dataType: 'json',
+            success: function (data) {
+                if (data.result) 
+                {
+                   $("#"+tech).remove();
+                   //implement messages for user feedback
+                } 
+                else
+                {
+                    //message   
+                }
+            },
+            fail: function (data) {
+                alert("an error occured");
+            }
+        });
+    });
+
+</script>
