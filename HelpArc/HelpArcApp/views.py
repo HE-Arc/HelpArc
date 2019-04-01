@@ -119,8 +119,15 @@ def completeprofile(request):
 
 @login_required
 def helpRequest(request, id):
-    context = {}
+    context = {}    
     helpRequest = Request.objects.get(id=id)
+    messageForm = MessageForm()
+    messages = Message.objects.filter(requestId=helpRequest)
+
+    context['messageForm'] = messageForm
+    context['messages'] = messages
+    context['helpRequest'] = helpRequest
+
     if request.method == 'POST':
         messageForm = MessageForm(request.POST)
         if messageForm.is_valid:
@@ -130,10 +137,6 @@ def helpRequest(request, id):
             message.save()
         return render(request, 'request.html', context)
     
-    messageForm = MessageForm()
-    messages = Message.objects.filter(requestId=helpRequest)
-    if request.method == 'GET':
-        context['messageForm'] = messageForm
-        context['messages'] = messages
-        context['helpRequest'] = helpRequest
+    
+    if request.method == 'GET':        
         return render(request, 'request.html', context)
