@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Your Profile{% endblock %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-2">
+            <div class="list-group" style="margin-top: 60%;">
+                <button type="button" class="list-group-item list-group-item-action">Profile</button>
+                <button type="button" class="list-group-item list-group-item-action">Email</button>
+                <button type="button" class="list-group-item list-group-item-action">Password</button>
+                <button type="button" class="list-group-item list-group-item-action">Technologies</button>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <form method="POST" class="uniform" style="font-size:20px">
+             {% csrf_token %}
+                {{ requestForm | crispy }}
+                {{ messageForm | crispy }}
+                <input class ="btn btn-success w-100 p-3" type="submit">
+            </form>
+        </div>
+        <div class="col-lg">
+            <form>
+                <img src="{% static 'HelpArc/img/default-user-image.png' %}" width="100px">
+                <p>
+                    Name: <input type="text">
+                </p>
+
+                <p>
+                    Surname: <input type="text">
+                </p>
+
+                <input class="" type="submit">
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Your Profile{% endblock %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<script src="{% static 'HelpArc/jquery.formset.js' %}"></script>
+<div class="">
+    <h1>{{result}}</h1>
+    <h1>{{ error }}</h1>
+    <div class="card">
+        <div class="row">
+            <div class="col">
+            <form action="" method="POST">
+                {% csrf_token %}
+                    <div class='skills form-control'>
+                        {{ UserTitleForm | crispy }}
+                    </div>
+                <div id="skills-container" class="form-group">
+                    <div class='skills form-control'>
+                    {{ formset.errors }}
+                    {{ formset.non_field_errors }}
+                    {{ formset.non_form_errors }}
+                    {{ form.management_form }}
+                        {% for f in form %}                                 
+                            <div class="link-formset">   
+                            <hr style="color:black; border-color:black">  
+                                <div class="row">
+                                    <div class="col-11">
+                                        {{ f.technologyId | as_crispy_field}}
+                                    </div>    
+                                    <div class="col-1">
+                                        {{ f.level | as_crispy_field}}  
+                                    </div> 
+                                </div>
+                            </div>              
+                        {% endfor %}
+
+                    </div>
+                </div>
+                <input type="submit" class="btn btn-success w-100 p-3" value="Submit">
+                </form>
+            </div> 
+        </div>
+    </div>
+
+</div>
+<script>
+    $('.link-formset').formset({
+        addText: 'Add Skill',
+        deleteText: 'Remove Skill'
+    });
+</script>
+
+{% endblock %}

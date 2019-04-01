@@ -1,0 +1,88 @@
+{% if classes %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+            <th scope="col">Nom</th>
+            <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for class in classes %}
+            <tr id='{{ class.id }}'>
+                <th>{{ class.name }}</th>
+                <th>
+                    <button id="d{{ class.id }}" class="delete action-button" type="button">Supprimer</button> 
+                </th>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    There's no technologies
+{% endif %}
+
+<form action="{% url 'class_add' %}" enctype='multipart/form-data' id='post-form'>
+    {% csrf_token %}
+    <fieldset class="form-group">
+        <legend class="border-bottom mb-4 ">Ajouter une classe</legend>
+            {{ form }}
+    </fieldset>
+    <div class="form-group">
+        <button class="btn btn-outline-info" type="submit">Ajouter</button>
+    </div>
+</form>
+
+
+<script>
+    // Submit post on submit
+    $('#post-form').on('submit', function(event){
+        event.preventDefault();
+        console.log("form submitted!")  // sanity check
+        create_post();
+    });
+
+    function create_post() {
+        var form = $('#post-form');
+        var formdata = new FormData(form.get(0));
+
+        $.ajax({
+            url : "{% url 'class_add' %}",
+            type : "POST",
+            data : formdata,
+            contentType: 'multipart/form-data',
+            processData: false,
+            contentType: false, 
+
+            success : function(json) {
+                console.log("worked");
+                console.log(json.obj);
+            },
+        });
+    };
+
+    $(".action-button").click(function () {
+        var classe = $(this).attr('id');
+        classe = classe.substring(1, classe.length);
+        $.ajax({
+            method: 'POST',
+            data: { csrfmiddlewaretoken: window.CSRF_TOKEN, 'id': classe},
+            url: '{% url 'class_delete' %}',
+            dataType: 'json',
+            success: function (data) {
+                if (data.result) 
+                {
+                   $("#"+classe).remove();
+                   //implement messages for user feedback
+                } 
+                else
+                {
+                    //message   
+                }
+            },
+            fail: function (data) {
+                alert("an error occured");
+            }
+        });
+    });
+
+</script>
