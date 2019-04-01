@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 
 class Technology(models.Model):
     name = models.CharField(max_length=30)
-    logo = models.ImageField()
+    logo = models.ImageField(default='/skills_pics', upload_to='skills_pics/')
     def __str__(self):
         return self.name
 

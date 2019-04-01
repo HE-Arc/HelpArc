@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.contrib import messages
-from .forms import profileRegisterForm, userRegisterForm, registerTechnology, registerClass
+from .forms import profileRegisterForm, userRegisterForm, registerTechnology, registerClass, registerTitle
 import logging
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import JsonResponse
-from HelpArcApp.models import Technology, Class
+from HelpArcApp.models import Technology, Class, Title
+from django.core import serializers
 
 logger = logging.getLogger("__name__")
 
@@ -46,6 +47,8 @@ def admin_dashboard(request):
 
     return render(request, 'users/admin_dashboard.html', context)
 
+
+#Helpers
 @login_required
 def admin_helper_request_accept(request):
     context = {}
@@ -90,7 +93,7 @@ def admin_helper_request_reject(request):
     return JsonResponse(data)
 
 @login_required
-def admin_helper_requests(request):
+def admin_helpers(request):
     if request.user.profile.accountLevel != 2:
         # add message not admin
         return redirect('index')
@@ -103,37 +106,6 @@ def admin_helper_requests(request):
     context['ask_helpers'] = ask_helpers
 
     res = render_to_string(request=request, template_name='users/admin_helpers.html', context=context)
-    data = {'result':True, 'html': res}
-    return JsonResponse(data)
-
-@login_required
-def admin_technologies(request):
-    if request.user.profile.accountLevel != 2:
-        # add message not admin
-        return redirect('index')
-
-    context = {}
-    technologies = Technology.objects.all()
-    for techs in technologies:
-        print(techs.id)
-    context['technologies'] = technologies
-    context['form'] = registerTechnology()
-    res = render_to_string(request=request, template_name='users/admin_technologies.html', context=context)
-    data = {'result':True, 'html': res}
-    return JsonResponse(data)
-
-@login_required
-def admin_classes(request):
-    if request.user.profile.accountLevel != 2:
-        # add message not admin
-        return redirect('index')
-
-    context = {}
-    classes = Class.objects.all()
-
-    context['classes'] = classes
-    context['form'] = registerClass()
-    res = render_to_string(request=request, template_name='users/admin_classes.html', context=context)
     data = {'result':True, 'html': res}
     return JsonResponse(data)
 
@@ -154,6 +126,24 @@ def admin_helper_revoke(request):
     helper.profile.accountLevel = 0
     helper.profile.save()
 
+    return JsonResponse(data)
+
+
+#Technologies
+@login_required
+def admin_technologies(request):
+    if request.user.profile.accountLevel != 2:
+        # add message not admin
+        return redirect('index')
+
+    context = {}
+    technologies = Technology.objects.all()
+    for techs in technologies:
+        print(techs.id)
+    context['technologies'] = technologies
+    context['form'] = registerTechnology()
+    res = render_to_string(request=request, template_name='users/admin_technologies.html', context=context)
+    data = {'result':True, 'html': res}
     return JsonResponse(data)
 
 @login_required
@@ -195,6 +185,22 @@ def admin_technology_delete(request):
     return JsonResponse(data)
 
 
+#Classes
+@login_required
+def admin_classes(request):
+    if request.user.profile.accountLevel != 2:
+        # add message not admin
+        return redirect('index')
+
+    context = {}
+    classes = Class.objects.all()
+
+    context['classes'] = classes
+    context['form'] = registerClass()
+    res = render_to_string(request=request, template_name='users/admin_classes.html', context=context)
+    data = {'result':True, 'html': res}
+    return JsonResponse(data)
+
 @login_required
 def admin_class_add(request):
 
@@ -229,5 +235,59 @@ def admin_class_delete(request):
 
     
     classe.delete()
+
+    return JsonResponse(data)
+
+
+#Titles
+@login_required
+def admin_titles(request):
+    if request.user.profile.accountLevel != 2:
+        # add message not admin
+        return redirect('index')
+
+    context = {}
+    titles = Title.objects.all()
+
+    context['titles'] = titles
+    context['form'] = registerTitle()
+    res = render_to_string(request=request, template_name='users/admin_titles.html', context=context)
+    data = {'result':True, 'html': res}
+    return JsonResponse(data)
+
+@login_required
+def admin_title_add(request):
+
+    if request.user.profile.accountLevel != 2:
+        # add message not admin
+        return redirect('index')
+
+    if request.POST:
+        title_form = registerTitle(request.POST)
+        
+        if title_form.is_valid():
+            title = title_form.save()
+            obj = serializers.serialize('json', [title])
+            return JsonResponse( { 'res':True, 'obj':obj })
+    
+
+    return JsonResponse({ 'res': False })
+
+@login_required
+def admin_title_delete(request):
+    if request.user.profile.accountLevel != 2:
+        # add message not admin
+        return redirect('index')
+
+    id = request.POST.get('id', None)
+    data = { 'result':True, 'message':"This exist" }
+
+    title = Title.objects.filter(id=id).first()
+  
+    if title is None:
+        return JsonResponse({ 'result' : False, 'message':"This id doesn't exist" })
+
+    
+    title.delete()
 
     return JsonResponse(data)
