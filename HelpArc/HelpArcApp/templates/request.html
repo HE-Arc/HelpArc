@@ -8,17 +8,20 @@
 
 <div class="m-2">
 <h2>Requête à {{ helpRequest.helperId.username }}</h2>
-<h3>{{ helpRequest.title }}</h3>
 </div>
 
-<div class="container m-3">
     <div class="row">
-     {% for message in messages %}
-       <div class="col-lg-12">{{ message.content }} posté le {{ message.date }} par {{ message.senderId.username }}</div>
-
+    
+<div class="card w-100" >
+  <div class="card-header">
+    <h3>{{ helpRequest.title }}</h3>
+  </div>
+  <ul class="list-group list-group-flush">
+   {% for message in messages %}
+       <li class="list-group-item">{{ message.content }} posté le {{ message.date }} par {{ message.senderId.username }}</li>
      {% endfor %}
-
-
+  </ul>
+</div>
     </div>
      <div class="col-lg-12">
         {{ formset.errors }}
