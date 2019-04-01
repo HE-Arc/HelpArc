@@ -68,7 +68,7 @@ def admin_helper_request_accept(request):
     helper.profile.asked_helper = False
     helper.profile.is_complete = False
     helper.profile.save()
-
+    data['obj'] = serializers.serialize('json', [helper])
     return JsonResponse(data)
 
 @login_required
@@ -157,9 +157,10 @@ def admin_technology_add(request):
         technology_form = registerTechnology(request.POST, request.FILES)
         
         if technology_form.is_valid():
-            technology_form.save()
+            technology = technology_form.save()
+            obj = serializers.serialize('json', [technology])
 
-            return JsonResponse( { 'res':True })
+            return JsonResponse( { 'res':True, 'obj':obj })
     
 
     return JsonResponse({ 'res': False })
@@ -212,9 +213,9 @@ def admin_class_add(request):
         class_form = registerClass(request.POST, request.FILES)
         
         if class_form.is_valid():
-            class_form.save()
-
-            return JsonResponse( { 'res':True })
+            classe = class_form.save()
+            obj = serializers.serialize('json', [classe])
+            return JsonResponse( { 'res':True, 'obj':obj })
     
 
     return JsonResponse({ 'res': False })
