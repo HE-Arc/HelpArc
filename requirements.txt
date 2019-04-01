@@ -1,4 +1,18 @@
-Django==2.1.5
+################################################################################
+# This requirements file has been automatically generated from `Pipfile` with
+# `pipenv-to-requirements`
+#
+#
+# This has been done to maintain backward compatibility with tools and services
+# that do not support `Pipfile` yet.
+#
+# Do NOT edit it directly, use `pipenv install [-d]` to modify `Pipfile` and
+# `Pipfile.lock` and then regenerate `requirements*.txt`.
+################################################################################
+
 django-bootstrap4==0.0.7
+django-crispy-forms
+django==2.1.5
 djangorestframework==3.9.0
+pillow
 pytz==2017.3
