@@ -123,7 +123,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = "/var/www/HelpArc/current/HelpArc/HelpArcApp/static/"
+STATIC_ROOT = "/var/www/static/"
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
