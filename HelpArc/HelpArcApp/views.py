@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from .forms import SkillsForm, UserTitleForm, MessageForm, RequestForm
 from django.forms import formset_factory
 from django.forms.models import modelformset_factory
-from .models import Technology, SkillLevels
+from .models import Technology, SkillLevels, Message, Request
 from django.http import JsonResponse
 
 
@@ -65,6 +65,7 @@ def askhelp(request, id):
 
             message = messageForm.save(commit=False)
             message.requestId = helpRequest
+            message.senderId = request.user
             message.save()
         return render(request, 'index.html', context)
     return render(request, 'completeprofile.html', context)
@@ -115,3 +116,27 @@ def completeprofile(request):
         context['form'] = SkillsFormSet(queryset=SkillLevels.objects.filter(userId=current_user))
         context['UserTitleForm'] = titleForm
         return render(request, 'completeprofile.html', context)
+
+@login_required
+def helpRequest(request, id):
+    context = {}    
+    helpRequest = Request.objects.get(id=id)
+    messageForm = MessageForm()
+    messages = Message.objects.filter(requestId=helpRequest)
+
+    context['messageForm'] = messageForm
+    context['messages'] = messages
+    context['helpRequest'] = helpRequest
+
+    if request.method == 'POST':
+        messageForm = MessageForm(request.POST)
+        if messageForm.is_valid:
+            message = messageForm.save(commit=False)
+            message.requestId = helpRequest
+            message.senderId = request.user
+            message.save()
+        return render(request, 'request.html', context)
+    
+    
+    if request.method == 'GET':        
+        return render(request, 'request.html', context)
