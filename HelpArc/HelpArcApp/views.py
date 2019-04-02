@@ -11,6 +11,7 @@ from django.forms.models import modelformset_factory
 from .models import Technology, SkillLevels, Message, Request
 from django.http import JsonResponse
 from django.core import serializers
+from django.template import Context, Template
 
 
 import logging
@@ -53,10 +54,19 @@ def updateindex(request):
     helpers = User.objects.filter(profile__accountLevel='1')
     for i in range(len(request.GET)):
         techid = Technology.objects.filter(name=request.GET.get(str(i))).first()
-        helpers.filter(skilllevels__technologyId=str(techid.pk))
-    print(helpers)
-    serialized_qs = serializers.serialize('json', helpers)
-    data= {'helpers':serialized_qs}
+        helpers = helpers.filter(skilllevels__technologyId=str(techid.pk))
+        if not helpers.exists():
+            helpers = None
+            break
+
+    if helpers == None:
+        html = "<p>No qualified helper found for this search<p>"
+    else:
+        template = Template("{% for user in users %}{% include 'profile_card.html' with firstname=user.first_name lastname=user.last_name picture=user.profile.picture.url title=user.profile.titleId only %}{% endfor %}")
+        context = Context({'users': helpers})
+        html = template.render(context)
+
+    data = {'helpers': html}
     return JsonResponse(data)
 
 @login_required

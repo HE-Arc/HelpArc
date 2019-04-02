@@ -22,11 +22,11 @@
     <hr/>
 
     <div class="m-2">
-    <h2>Most Requested</h2>
+    <h2 id="contenttitle">Most Requested</h2>
     </div>
 
     <div class="m-3">
-        <div class="row">
+        <div id="pagecontent1" class="row">
          {% for user in users %}
             {% include './profile_card.html' with firstname=user.first_name lastname=user.last_name picture=user.profile.picture.url title=user.profile.titleId only %}
          {% endfor %}
@@ -46,33 +46,25 @@
     $("#searchtechs").on("click", function(){
         var techs = $('#techseeked').select2('data');
         var selected = {}
+        var nbelem = 0
         $.each(techs, function(index){
             selected[index] = this.text;
+            nbelem++;
         });
-        console.log(selected);
-        $.ajax({
-            url: "{% url 'updateIndex' %}",
-            type: 'GET',
-            data: selected,
-            dataType: 'json',
-            success: function(data){
-                console.log(data);
-                var list = JSON.parse(data.helpers)
-                console.log(list)
-                console.log(list.length)
-                if(list.length >0){
-                    /*$.each(list, function(index,value){
-                        console.log(value);
-                    });*/
-                    data.helpers.forEach(h => {
-                        console.log(h);
-                    })
-                }else{
-                    console.log("empty array");
-                };
-            },
+        console.log(nbelem);
+        if(nbelem > 0){
+            $.ajax({
+                url: "{% url 'updateIndex' %}",
+                type: 'GET',
+                data: selected,
+                dataType: 'json',
+                success: function(data){
+                    $("#pagecontent1").html(data.helpers);
+                    $("#contenttitle").text("Search Result");
+                },
 
-        });
+            });
+        }
     });
 </script>
 
