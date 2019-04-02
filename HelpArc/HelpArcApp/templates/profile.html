@@ -4,7 +4,7 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<script src="{% static 'HelpArc/jquery.formset.js' %}"></script>
+
 <div class="container">
     <div class="row">
         <div class="col-lg-2">
@@ -79,7 +79,7 @@
                                     {{ form.management_form }}
                                     {% for f in form %}                                 
                                         <div class="link-formset">   
-                                            <td class="hidden">{{ f.id }}</td>
+                                            
                                             <hr style="color:black; border-color:black">  
                                             <div class="row">
                                                 <div class="col-9">
@@ -88,6 +88,7 @@
                                                 <div class="col-3">
                                                     {{ f.level | as_crispy_field}}  
                                                 </div> 
+                                                <td class="hidden">{{ f.id }}</td>
                                             </div>
                                         </div>              
                                     {% endfor %}
@@ -102,15 +103,16 @@
         </div>
     </div>
 </div>
+<script src="{% static 'HelpArc/jquery.formset.js' %}"></script>
 
 <script>
-
+$('document').ready(function(){
     $('.link-formset').formset({
         addText: 'Add Skill',
         deleteText: 'Remove Skill'
     });
-
-
+});
+    
     // Catch submit event of the form
     $(document).on('submit', '.post-form', function(event){
         event.preventDefault();

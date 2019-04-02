@@ -261,7 +261,7 @@ def helpRequest(request, id):
     messages = Message.objects.filter(requestId=helpRequest)
 
     context['messageForm'] = messageForm
-    context['messages'] = messages
+    context['messagesH'] = messages
     context['helpRequest'] = helpRequest
 
     if request.method == 'POST':
