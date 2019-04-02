@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django.urls import path, include
-
 from . import views
 
 urlpatterns = [
@@ -19,6 +18,7 @@ urlpatterns = [
     path('ajax/update_account', views.update_account, name='account_update'),
     path('ajax/update_helper', views.update_helper, name='helper_update'),
 
+    path('ajax/search/', views.updateindex, name='updateIndex'),
 ]
 
 

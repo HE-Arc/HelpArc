@@ -6,7 +6,7 @@
         <div class="card-body">
             <h5 class="card-title">{{ firstname }} {{ lastname }}</h5>
             <p class="card-text">{{ title }}</p>
-            <img class="" width="40" src="{% static 'HelpArc/img/askhelp.png' %}" alt="Card image cap">
+            <a href="/askhelp/{{ id }}"><img class="" width="40" src="{% static 'HelpArc/img/askhelp.png' %}" alt="Card image cap"></a>
         </div>
     </div>
 </div>

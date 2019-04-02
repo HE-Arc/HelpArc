@@ -13,6 +13,8 @@ from django.http import JsonResponse
 from users.forms import profileUpdateForm, userUpdateForm, accountUpdateForm
 from django.http import JsonResponse
 from django.contrib import messages as dMessage
+from django.core import serializers
+from django.template import Context, Template
 
 
 def check_is_completed(request):
@@ -24,12 +26,53 @@ def check_is_completed(request):
 
 @login_required
 def index(request):
-    most_requested = User.objects.filter(profile__accountLevel='1') # Get most requested
-    
-    check_is_completed(request)
-    
-    context = {'users': most_requested}
+    most_requested = User.objects.filter(profile__accountLevel='1') # Get helpers
+    technologies = Technology.objects.all()
+    # Check if user is a helper without completed profile
+    current_user_profile = request.user.profile
+    if current_user_profile.accountLevel == 1 and not current_user_profile.is_complete:
+        logger.error("Not completed")
+        #create message to ask for completion
+
+    #get most requested
+    scores = [0]
+    most_r = []
+    for requested in most_requested:
+        temp = SkillLevels.objects.filter(userId=requested.pk)
+        temp_count = len(temp)
+        if temp_count >= scores[0]:
+            most_r.insert(0,requested)
+        elif temp_count >= scores[1]:
+            most_r.insert(1,requested)
+        elif temp_count >= scores[2]:
+            most_r.insert(2,requested)
+    if len(most_r)>2:
+        most_requested = most_r[:3]
+    else:
+        most_requested = most_r
+
+    context = {'users': most_requested, 'techs': technologies}
     return render(request, 'index.html', context)
+
+@login_required
+def updateindex(request):
+    helpers = User.objects.filter(profile__accountLevel='1')
+    for i in range(len(request.GET)):
+        techid = Technology.objects.filter(name=request.GET.get(str(i))).first()
+        helpers = helpers.filter(skilllevels__technologyId=str(techid.pk))
+        if not helpers.exists():
+            helpers = None
+            break
+
+    if helpers == None:
+        html = "<p>No qualified helper found for this search<p>"
+    else:
+        template = Template("{% for user in users %}{% include 'profile_card.html' with firstname=user.first_name lastname=user.last_name picture=user.profile.picture.url title=user.profile.titleId only %}{% endfor %}")
+        context = Context({'users': helpers})
+        html = template.render(context)
+
+    data = {'helpers': html}
+    return JsonResponse(data)
 
 @login_required
 def profile(request):
@@ -73,8 +116,7 @@ def update_profile(request):
 
 @login_required
 def update_account(request):
-    if request.method == 'POST':
-        
+    if request.method == 'POST':        
         form = request.POST;
         if form['mail'] != None:
             user = request.user
@@ -88,7 +130,6 @@ def update_account(request):
 
 @login_required
 def update_helper(request):
-
     if request.method == 'POST':
         SkillsFormSet = modelformset_factory(SkillLevels, form=SkillsForm)
         # create a form instance and populate it with data from the request:
@@ -147,6 +188,7 @@ def askhelp(request, id):
         context = {}
         context['requestForm'] = requestForm
         context['messageForm'] = messageForm
+        context['requested'] =  requested.user
         return render(request, 'askhelp.html', context)
     if request.method == 'POST':
         requestForm = RequestForm(request.POST)
@@ -163,7 +205,7 @@ def askhelp(request, id):
             message.requestId = helpRequest
             message.senderId = request.user
             message.save()
-        return render(request, 'index.html', context)
+        return  redirect('helpRequest', id=helpRequest.id)
     return render(request, 'completeprofile.html', context)
 
 

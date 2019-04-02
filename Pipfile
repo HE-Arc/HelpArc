@@ -10,6 +10,8 @@ pytz = "==2017.3"
 Django = "==2.1.5"
 pillow = "*"
 django-crispy-forms = "*"
+crispy-forms = "*"
+django-select2 = "*"
 
 [dev-packages]
 
