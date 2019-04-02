@@ -8,7 +8,7 @@ from .models import Request
 from django.forms.formsets import formset_factory
 
 class SkillsForm(forms.ModelForm):
-    class Meta:
+    class Meta():
         model= SkillLevels
         fields=['technologyId', 'level']
         labels = {
@@ -21,7 +21,8 @@ class SkillsForm(forms.ModelForm):
         }
 
 class UserTitleForm(forms.ModelForm):
-    class Meta:
+    
+    class Meta():
         model= Profile
         fields=['titleId']
         labels = {
@@ -32,7 +33,7 @@ class UserTitleForm(forms.ModelForm):
         }
 
 class MessageForm(forms.ModelForm):
-    class Meta:
+    class Meta():
         model= Message
         fields=['content']
         labels = {
@@ -43,7 +44,7 @@ class MessageForm(forms.ModelForm):
         }
 
 class RequestForm(forms.ModelForm):
-    class Meta:
+    class Meta():
         model= Request
         fields=['title', 'technologyId']
         labels = {
