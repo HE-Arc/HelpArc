@@ -173,7 +173,6 @@ coverage.xml
 *.mo
 
 # Django stuff:
-db.sqlite3
 
 # Flask stuff:
 instance/
@@ -242,7 +241,5 @@ dmypy.json
 ### VisualStudioCode Patch ###
 # Ignore all local history of files
 .history
-db.sqlite3
-
 
 projectEnv/
