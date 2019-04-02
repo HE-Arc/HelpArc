@@ -1,113 +1,64 @@
-{% if ask_helpers %}
-    <table class="table table-striped">
-                <thead>
-                    <tr>
-                    <th scope="col">Username</th>
-                    <th scope="col">First Name</th>
-                    <th scope="col">Last Name</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for user in ask_helpers %}
-                        <tr id='{{ user.id }}'>
-                            <th>{{ user.username }}</th>
-                            <th>{{ user.first_name }}</th>
-                            <th>{{ user.last_name }}</th>
-                            <th>{{ user.email }}</th>
-                            <th><button id="a{{ user.id }}" class="accept action-button" type="button">Accepter</button> 
-                                <button id="r{{ user.id }}" class="reject action-button" type="button">Refuser</button>
-                            </th>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-{% else %}
-    Pas de requêtes
-{% endif %}
+<h2>Liste des demandes</h2>
 
-<line></line>
+<table class="table table-striped" id="requestTable">
+    <thead>
+        <tr>
+        <th scope="col">Username</th>
+        <th scope="col">First Name</th>
+        <th scope="col">Last Name</th>
+        <th scope="col">Email</th>
+        <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% if ask_helpers %}
+        {% for user in ask_helpers %}
+            <tr id='h{{ user.id }}'>
+                <th>{{ user.username }}</th>
+                <th>{{ user.first_name }}</th>
+                <th>{{ user.last_name }}</th>
+                <th>{{ user.email }}</th>
+                <th><button id="a{{ user.id }}" class="accept" type="button">Accepter</button> 
+                    <button id="r{{ user.id }}" class="reject" type="button">Refuser</button>
+                </th>
+            </tr>
+        {% endfor %}
+    {% endif %}
+    </tbody>
+</table>
 
-{% if helpers %}
-            
-    <table class="table table-striped">
-            <thead>
-                <tr>
-                <th scope="col">Username</th>
-                <th scope="col">First Name</th>
-                <th scope="col">Last Name</th>
-                <th scope="col">Email</th>
-                <th scope="col">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for user in helpers %}
-                    <tr id='{{ user.id }}'>
-                        <th>{{ user.username }}</th>
-                        <th>{{ user.first_name }}</th>
-                        <th>{{ user.last_name }}</th>
-                        <th>{{ user.email }}</th>
-                        <th>
-                            <button id="a{{ user.id }}" class="revoke-button" type="button">Revoke</button> 
-                        </th>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-{% endif %}
+<h2>Liste des Helpers</h2>
+    
+<table class="table table-striped" id="mytable">
+    <thead>
+        <tr>
+        <th scope="col">Username</th>
+        <th scope="col">First Name</th>
+        <th scope="col">Last Name</th>
+        <th scope="col">Email</th>
+        <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% if helpers %}
+        {% for user in helpers %}
+            <tr id='{{ user.id }}'>
+                <th>{{ user.username }}</th>
+                <th>{{ user.first_name }}</th>
+                <th>{{ user.last_name }}</th>
+                <th>{{ user.email }}</th>
+                <th>
+                    <button id="a{{ user.id }}" class="delete" type="button">Revoke</button> 
+                </th>
+            </tr>
+        {% endfor %}
+    {% endif %}
+    </tbody>
+</table>
+
 
 <script>
-    $(".action-button").click(function () {
-        var user = $(this).attr('id');
-        url = user[0] == 'a' ? '{% url 'accept_helper' %}' : '{% url 'reject_helper' %}'
-        user = user.substring(1, user.length);
-        
-        $.ajax({
-            method: 'POST',
-            data: { csrfmiddlewaretoken: window.CSRF_TOKEN, 'id': user},
-            url: url,
-            dataType: 'json',
-            success: function (data) {
-                if (data.result) 
-                {
-                   $("#"+user).remove();
-                   //implement messages for user feedback
-                } 
-                else
-                {
-                    //message   
-                }
-            },
-            fail: function (data) {
-                alert("an error occured");
-            }
-        });
-    });
+    
 
-    $(".revoke-button").click(function () {
-        var user = $(this).attr('id');
-        user = user.substring(1, user.length);
-        
-        $.ajax({
-            method: 'POST',
-            data: { csrfmiddlewaretoken: window.CSRF_TOKEN, 'id': user},
-            url: '{% url 'helper_revoke' %}',
-            dataType: 'json',
-            success: function (data) {
-                if (data.result) 
-                {
-                   $("#"+user).remove();
-                   //implement messages for user feedback
-                } 
-                else
-                {
-                    //message   
-                }
-            },
-            fail: function (data) {
-                alert("an error occured");
-            }
-        });
-    });
+    
 </script>
