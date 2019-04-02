@@ -40,6 +40,9 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'profile' %}">Profil</a>
           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="{% url 'myRequests' %}">Demandes d'aides</a>
+          </li>
           {% if user.profile.accountLevel == 2 %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'admin_dashboard' %}">Dashboard admin</a>
