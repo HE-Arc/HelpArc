@@ -84,7 +84,6 @@ def completeprofile(request):
     SkillsFormSet = modelformset_factory(SkillLevels, form=SkillsForm)
     titleForm = UserTitleForm(instance=profile)
     if request.method == 'POST':
-        
         # create a form instance and populate it with data from the request:
         formSet = SkillsFormSet(request.POST)
         titleForm = UserTitleForm(request.POST, instance=profile)
@@ -140,3 +139,17 @@ def helpRequest(request, id):
     
     if request.method == 'GET':        
         return render(request, 'request.html', context)
+
+@login_required
+def myRequests(request):
+    context = {}  
+    
+    current_user_profile = request.user.profile
+    if current_user_profile.accountLevel == 1 and not current_user_profile.is_complete:
+        myHelpRequests = Request.objects.filter(helperId=request.user)
+    elif current_user_profile.accountLevel == 0:
+        myHelpRequests = Request.objects.filter(studentId=request.user)        
+    else:
+        return redirect('index')
+    context['helpRequests'] = myHelpRequests
+    return render(request, 'myRequests.html', context)

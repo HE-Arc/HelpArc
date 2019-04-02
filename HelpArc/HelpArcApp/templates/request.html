@@ -7,18 +7,17 @@
 <hr/>
 
 <div class="m-2">
-<h2>Requête à {{ helpRequest.helperId.username }}</h2>
 </div>
 
     <div class="row">
     
 <div class="card w-100" >
   <div class="card-header">
-    <h3>{{ helpRequest.title }}</h3>
+    <h4>{{ helpRequest.title }} requête de {{ helpRequest.studentId.get_full_name }}</h4>
   </div>
   <ul class="list-group list-group-flush">
    {% for message in messages %}
-       <li class="list-group-item">{{ message.content }} posté le {{ message.date }} par {{ message.senderId.username }}</li>
+       <li class="list-group-item"><p class="float-left text-justify mt-3 mb-3">{{ message.content }}</p> <br><p class="float-right clear"> Posté le {{ message.date }} par {{ message.senderId.get_full_name }}</p></li>
      {% endfor %}
   </ul>
 </div>

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Requête{% endblock %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<hr/>
+
+<div class="m-2">
+<h2>Mes demandes d'aides</h2>
+</div>
+
+    <div class="row">
+    
+<div class="card w-100" >
+  
+  {% for helpRequest in helpRequests %}
+  <div class="card-header">
+      <a href="helpRequest/{{helpRequest.id}}" class="float-left" ><h3>{{ helpRequest.title }}</h3></a><h5 class="float-right"> de {{ helpRequest.studentId.get_full_name }} le {{ helpRequest.date }}</h5>
+    </div>
+  {% endfor %}
+
+</div>
+
+{% endblock %}

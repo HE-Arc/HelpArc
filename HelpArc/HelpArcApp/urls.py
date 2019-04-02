@@ -13,7 +13,7 @@ urlpatterns = [
     path('askhelp/<id>', views.askhelp, name='askhelp'),
     path('completeprofile', views.completeprofile, name='completeprofile'),
     path('helpRequest/<id>', views.helpRequest, name='helpRequest'),
-
+    path('myRequests', views.myRequests, name='myRequests'),
 ]
 
 
