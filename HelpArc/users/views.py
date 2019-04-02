@@ -1,15 +1,12 @@
-from django.shortcuts import render, redirect
-from django.template.loader import render_to_string
-from django.contrib import messages
 from .forms import profileRegisterForm, userRegisterForm, registerTechnology, registerClass, registerTitle
-import logging
 from django.contrib.auth.decorators import login_required
+from HelpArcApp.models import Technology, Class, Title
+from django.template.loader import render_to_string
+from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.http import JsonResponse
-from HelpArcApp.models import Technology, Class, Title
 from django.core import serializers
-
-logger = logging.getLogger("__name__")
+from django.contrib import messages
 
 def register(request):
     if request.method == 'POST':
