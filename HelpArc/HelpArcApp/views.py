@@ -206,7 +206,6 @@ def askhelp(request, id):
             message.senderId = request.user
             message.save()
         return  redirect('helpRequest', id=helpRequest.id)
-    return render(request, 'completeprofile.html', context)
 
 
 
@@ -283,11 +282,14 @@ def myRequests(request):
     context = {}  
     
     current_user_profile = request.user.profile
-    if current_user_profile.accountLevel == 1 and not current_user_profile.is_complete:
-        myHelpRequests = Request.objects.filter(helperId=request.user)
+    if current_user_profile.accountLevel == 1 and current_user_profile.is_complete:
+        myHelpRequests = Request.objects.filter(helperId=request.user,closed=False)
+        myHelpRequestsClosed = Request.objects.filter(helperId=request.user,closed=True)
     elif current_user_profile.accountLevel == 0:
-        myHelpRequests = Request.objects.filter(studentId=request.user)        
+        myHelpRequests = Request.objects.filter(studentId=request.user,closed=False)        
+        myHelpRequestsClosed = Request.objects.filter(helperId=request.user,closed=True)
     else:
         return redirect('index')
     context['helpRequests'] = myHelpRequests
+    context['helpRequestsClosed'] = myHelpRequestsClosed
     return render(request, 'myRequests.html', context)
