@@ -293,3 +293,11 @@ def myRequests(request):
     context['helpRequests'] = myHelpRequests
     context['helpRequestsClosed'] = myHelpRequestsClosed
     return render(request, 'myRequests.html', context)
+
+@login_required
+def closeRequest(request, id):
+    if request.method == 'POST':
+        req = Request.objects.get(id=id)
+        req.closed = True
+        req.save()
+        return redirect('myRequests')

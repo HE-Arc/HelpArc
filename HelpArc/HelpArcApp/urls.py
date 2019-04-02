@@ -13,6 +13,7 @@ urlpatterns = [
     #path('completeprofile', views.completeprofile, name='completeprofile'),
     path('helpRequest/<id>', views.helpRequest, name='helpRequest'),
     path('myRequests', views.myRequests, name='myRequests'),
+    path('closeRequest/<id>', views.closeRequest, name='closeRequest'),
 
     path('ajax/update_profile', views.update_profile, name='profile_update'),
     path('ajax/update_account', views.update_account, name='account_update'),
