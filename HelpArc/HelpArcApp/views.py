@@ -225,7 +225,7 @@ def helpRequest(request, id):
 
     if request.method == 'POST':
         messageForm = MessageForm(request.POST)
-        if messageForm.is_valid:
+        if messageForm.is_valid():
             message = messageForm.save(commit=False)
             message.requestId = helpRequest
             message.senderId = request.user
