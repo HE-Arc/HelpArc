@@ -51,7 +51,6 @@
             selected[index] = this.text;
             nbelem++;
         });
-        console.log(nbelem);
         if(nbelem > 0){
             $.ajax({
                 url: "{% url 'updateIndex' %}",
