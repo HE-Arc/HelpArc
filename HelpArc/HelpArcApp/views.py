@@ -65,7 +65,7 @@ def updateindex(request):
             break
 
     if helpers == None:
-        html = "<p>No qualified helper found for this search<p>"
+        html = "<p>Aucune personne corespondant à vos critères à été trouvées<p>"
     else:
         template = Template("{% for user in users %}{% include 'profile_card.html' with firstname=user.first_name lastname=user.last_name picture=user.profile.picture.url title=user.profile.titleId only %}{% endfor %}")
         context = Context({'users': helpers})
