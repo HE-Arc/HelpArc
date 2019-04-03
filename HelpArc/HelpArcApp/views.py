@@ -67,7 +67,7 @@ def updateindex(request):
     if helpers == None:
         html = "<p>Aucune personne corespondant à vos critères à été trouvées<p>"
     else:
-        template = Template("{% for user in users %}{% include 'profile_card.html' with firstname=user.first_name lastname=user.last_name picture=user.profile.picture.url title=user.profile.titleId only %}{% endfor %}")
+        template = Template("{% for user in users %}{% include 'profile_card.html' with id=user.id firstname=user.first_name lastname=user.last_name picture=user.profile.picture.url title=user.profile.titleId only %}{% endfor %}")
         context = Context({'users': helpers})
         html = template.render(context)
 
@@ -93,8 +93,7 @@ def profile(request):
 def update_profile(request):
     if request.method == 'POST':
         profile_form = profileUpdateForm(request.POST, request.FILES)
-        #user_form = userUpdateForm(request.POST)
-        if profile_form.is_valid():# and user_form.is_valid():
+        if profile_form.is_valid():
             user = request.user
             profile = user.profile
 
@@ -103,10 +102,7 @@ def update_profile(request):
             if profile_form.cleaned_data['picture'] is not 'default.png':
                 profile.classId = profile_form.cleaned_data['classId']
             
-            profile.save()
-            #user_form.save()
-            #profile_form.save()
-            
+            profile.save()            
 
             return JsonResponse({'res': True})
         else:
@@ -152,24 +148,11 @@ def update_helper(request):
                 s.level = skill.cleaned_data['level']
                 s.technologyId = skill.cleaned_data['technologyId']
                 s.save()
-            # context['form'] = SkillsFormSet(request.POST)
-            # context['UserTitleForm'] = UserTitleForm(request.POST, instance=current_user)
-            #return render(request, 'completeprofile.html', context)
 
 
             return JsonResponse({ 'res':True })
-        # else:            
-        #     context={
-        #             'contact_form': SkillsFormSet(),
-        #             'error' : formSet.errors,
-        #             }
-        #     return render(request, 'completeprofile.html', context)
         return JsonResponse( { 'res': False })
         
-    # elif request.method == 'GET':
-    #     context['form'] = SkillsFormSet(queryset=SkillLevels.objects.filter(userId=current_user))
-    #     context['UserTitleForm'] = titleForm
-    #     return render(request, 'completeprofile.html', context)
 
 
 @login_required
@@ -177,11 +160,6 @@ def update_helper(request):
 def askhelp(request, id):
     requested = Profile.objects.get(id=id)
     context = {}
-    '''if requested.accountLevel == 1 and requested.titleId is None:
-        context = {'info': "bite"}
-    else:    
-        context = {'info': "ouais"}
-    return render(request, 'askhelp.html', context)'''
     requestForm = RequestForm()
     messageForm = MessageForm()
     if request.method == 'GET':
@@ -214,7 +192,6 @@ def completeprofile(request):
     try:
         current_user = request.user
         profile = Profile.objects.filter(user=request.user).first()
-        #user = CustomUser.objects.get(user_name=current_user)
     except Exception:
         return render(request, 'users/login.html', {})
     context = {}    
