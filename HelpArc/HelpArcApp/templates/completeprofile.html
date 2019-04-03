@@ -6,8 +6,6 @@
 
 <script src="{% static 'HelpArc/jquery.formset.js' %}"></script>
 <div class="">
-    <h1>{{result}}</h1>
-    <h1>{{ error }}</h1>
     <div class="card">
         <div class="row">
             <div class="col">
@@ -32,6 +30,7 @@
                                     <div class="col-1">
                                         {{ f.level | as_crispy_field}}  
                                     </div> 
+                                    <td class="hidden">{{ f.id }}</td>
                                 </div>
                             </div>              
                         {% endfor %}

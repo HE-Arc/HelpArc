@@ -9,11 +9,8 @@
     <div class="row">
         <div class="col-lg-4">
             <div class="card border-0" style="width: 18rem;">
-                <img class="card-img-top rounded-circle" src="{% static 'HelpArc/img/default-user-image.png' %}" alt="Card image cap">
-                <div class="card-body">
-                    <h5 class="card-title">Steve Visinand</h5>
-                    <p class="card-text">Research assistant</p>
-                </div>
+                {% include './profile_card.html' with id=requested.id firstname=requested.first_name lastname=requested.last_name picture=requested.profile.picture.url title=requested.profile.titleId only %}
+
             </div>
         </div>
         <div class="col-lg-8">
@@ -26,13 +23,6 @@
                 {{ requestForm | crispy }}
                 {{ messageForm | crispy }}
                 <input class ="btn btn-success w-100 p-3" type="submit">
-            </form>
-        </div>
-        <div class="col-lg">
-            <form>
-                Title: <input type="text"> <br>
-                Message: <textarea></textarea>
-                <input class="" type="submit">
             </form>
         </div>
     </div>

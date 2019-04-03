@@ -3,26 +3,68 @@
 {% block title %}Index Page{% endblock %}
 
 {% block content %}
+<div class="container">
+    <div class="m-4" style="width: 100%;">
+        <h3>Entrez la ou les technologies dans lesquelles vous avez besoin d'aide!</h3>
+        <div class="row">
+            <div class="col-md-9 pull-right">
+                <select class="js-multiple" id="techseeked" name="techseeked[]" multiple="multiple" style="width: 75%" >
+                    {% for t in techs %}
+                    <option>{{ t.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
 
-<form class="m-4" style="width: 100%;">
-    <h3>Enter the technologies you need help with !</h3>
-    <input type="text" style="width: 50%"><img src="{% static 'HelpArc/img/search2.png' %}" alt="Search icon" width="50px" class="m-2" placeholder="Search for technologies"></img>
-</form>
-
-<hr/>
-
-<div class="m-2">
-<h2>Most Requested</h2>
-</div>
-
-<div class="container m-3">
-    <div class="row">
-     {% for user in users %}
-        {% include './profile_card.html' with firstname=user.first_name lastname=user.last_name picture=user.profile.picture.url title=user.profile.titleId only %}
-     {% endfor %}
-
+            <img id="searchtechs" src="{% static 'HelpArc/img/search2.png' %}" alt="Search icon" width="50px" height="50px"></img>
+        </div>
     </div>
 
+    <hr/>
+
+    <div class="m-2">
+    <h2 id="contenttitle">Les plus recherchés</h2>
+    </div>
+
+    <div class="m-3">
+        <div id="pagecontent1" class="row">
+         {% for user in users %}
+            {% include './profile_card.html' with id=user.id firstname=user.first_name lastname=user.last_name picture=user.profile.picture.url title=user.profile.titleId only %}
+         {% endfor %}
+
+        </div>
+
+    </div>
 </div>
+<script>
+    $(document).ready(function() {
+        $(".js-multiple").select2({
+            closeOnSelect: false,
+            placeholder: 'Sélectionner des téchnologies',
+        });
+    });
+
+    $("#searchtechs").on("click", function(){
+        var techs = $('#techseeked').select2('data');
+        var selected = {}
+        var nbelem = 0
+        $.each(techs, function(index){
+            selected[index] = this.text;
+            nbelem++;
+        });
+        if(nbelem > 0){
+            $.ajax({
+                url: "{% url 'updateIndex' %}",
+                type: 'GET',
+                data: selected,
+                dataType: 'json',
+                success: function(data){
+                    $("#pagecontent1").html(data.helpers);
+                    $("#contenttitle").text("Résultat de la recherche");
+                },
+
+            });
+        }
+    });
+</script>
 
 {% endblock %}

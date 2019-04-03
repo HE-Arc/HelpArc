@@ -22,7 +22,14 @@
 {% block javascript %}
 <script>
     window.CSRF_TOKEN = "{{ csrf_token }}";
+    // function for the row insert
+    var rowFunction;
+    //urls for ajax functions
+    var url_get;
+    var url_add;
+    var url_delete;
 
+    //Fetch the landing page informations
     $( document ).ready(function() {
         $("#helper").trigger("click")
     });
@@ -30,17 +37,34 @@
 
 
 <script>
+    // Function to fetch the table and form with ajax depending on clicked button
     $(".view-button").click(function () {
         btn = $(this).attr('id')
 
         switch(btn){
-            case 'class': url = '{% url 'get_classes' %}';
+            case 'class': 
+                url_get = '{% url 'get_classes' %}';
+                url_add = '{% url 'class_add' %}';
+                url_delete = '{% url 'class_delete' %}';
+                rowFunction = rowForClass;
                 break;
-            case 'helper': url = '{% url 'get_helper' %}';
+            case 'helper': 
+                url_get = '{% url 'get_helper' %}';
+                url_add = '{% url 'accept_helper' %}';
+                url_delete = '{% url 'revoke_helper' %}';
+                rowFunction = rowForHelper;
                 break;
-            case 'technology': url = '{% url 'get_technologies' %}';
+            case 'technology':
+                url_get = '{% url 'get_technologies' %}';
+                url_add = '{% url 'technology_add' %}';
+                url_delete = '{% url 'technology_delete' %}';
+                rowFunction = rowForTechnology;
                 break;
-            case 'title': url = '{% url 'get_titles' %}';
+            case 'title': 
+                url_get = '{% url 'get_titles' %}';
+                url_add = '{% url 'title_add' %}';
+                url_delete = '{% url 'title_delete' %}';
+                rowFunction = rowForTitle;
                 break;
             default: return;
         }
@@ -48,7 +72,7 @@
         $.ajax({
             method: 'GET',
             data: { },
-            url: url,
+            url: url_get,
             dataType: 'json',
             success: function (data) {
                 if (data.result) 
@@ -67,6 +91,120 @@
             }
         });
     });
+
+    // Catch submit event of the form
+    $(document).on('submit', '#post-form', function(event){
+        event.preventDefault();
+        update_db();
+    });
+
+    // Ajax function to insert into database
+    function update_db() {
+        var form = $('#post-form');
+        var formdata = new FormData(form.get(0));
+
+        $.ajax({
+            url : url_add,
+            type : "POST",
+            data : formdata,
+            contentType: 'multipart/form-data',
+            processData: false,
+            contentType: false, 
+
+            success : function(json) {
+                console.log("worked")
+                // Add visual feedback
+                obj = JSON.parse(json.obj);
+                console.log(obj)
+                rowFunction(obj);
+            },
+        });
+    };
+
+    //Delete object from the database
+    $(document).on( 'click', '.delete', function () {
+        var id = $(this).attr('id');
+        objID = id.substring(1, id.length);
+        $.ajax({
+            method: 'POST',
+            data: { csrfmiddlewaretoken: window.CSRF_TOKEN, 'id': objID},
+            url: url_delete,
+            dataType: 'json',
+            success: function (data) {
+                if (data.result) 
+                {
+                   $("#"+objID).remove();
+                   //implement messages for user feedback
+                } 
+                else
+                {
+                    //message   
+                }
+            },
+            fail: function (data) {
+                alert("an error occured");
+            }
+        });
+    });
+
+    //Function for the helper requests: accept or reject the request
+    $(document).on( 'click', '.reject, .accept', function () {
+        var user = $(this).attr('id');
+        url = user[0] == 'a' ? url_add : '{% url 'reject_helper' %}';
+        user = user.substring(1, user.length);
+        
+        $.ajax({
+            method: 'POST',
+            data: { csrfmiddlewaretoken: window.CSRF_TOKEN, 'id': user},
+            url: url,
+            dataType: 'json',
+            success: function (json) {
+                if (json.result) 
+                {
+                    $("#requestTable").find("#h"+user).remove();
+
+                    // If we added the user to the helpers, insert into the table
+                    if(url = url_add)
+                    {
+                        obj = JSON.parse(json.obj);
+                        console.log(obj);
+                        rowFunction(obj);
+                    }
+                    //implement messages for user feedback
+                } 
+                else
+                {
+                    //message   
+                }
+            },
+            fail: function (data) {
+                alert("an error occured");
+            }
+        });
+    });
+
+    //Functions to insert new object into table, depending of the model
+    function rowForTitle(obj)
+    {
+        $('#mytable > tbody:last-child').append("<tr id='" + obj[0]['pk'] + "' ><th>" + obj[0]['fields']['name'] + "</th><th><button id='d" + obj[0]['pk'] + "' class='delete' type='button'>Supprimer</button></th></tr>");
+    }
+
+    function rowForClass(obj)
+    {
+        console.log("in row")
+        $('#mytable > tbody:last-child').append("<tr id='" + obj[0]['pk'] + "' ><th>" + obj[0]['fields']['name'] + "</th><th><button id='d" + obj[0]['pk'] + "' class='delete' type='button'>Supprimer</button></th></tr>");
+    }
+
+    function rowForHelper(obj)
+    {
+        $('#mytable > tbody:last-child').append("<tr id='" + obj[0]['pk'] + "' ><th>" + obj[0]['fields']['username'] + "</th><th>" + obj[0]['fields']['first_name'] + "</th><th>" + obj[0]['fields']['last_name'] + "</th><th>" + obj[0]['fields']['email'] + "</th><th><button id='d" + obj[0]['pk'] + "' class='delete' type='button'>Revoke</button></th></tr>");
+    }
+
+    function rowForTechnology(obj)
+    {
+        $('#mytable > tbody:last-child').append("<tr id='" + obj[0]['pk'] + "' ><th>" + obj[0]['fields']['name'] + "</th><th>" + obj[0]['fields']['logo'] + "</th><th><button id='d" + obj[0]['pk'] + "' class='delete action-button' type='button'>Supprimer</button></th></tr>");
+    }
+    
 </script>
 {% endblock javascript %}
 

@@ -9,37 +9,157 @@
     <div class="row">
         <div class="col-lg-2">
             <div class="list-group" style="margin-top: 60%;">
-                <button type="button" class="list-group-item list-group-item-action">Profile</button>
-                <button type="button" class="list-group-item list-group-item-action">Email</button>
-                <button type="button" class="list-group-item list-group-item-action">Password</button>
-                <button type="button" class="list-group-item list-group-item-action">Technologies</button>
+                <button type="button" class="list-group-item list-group-item-action btn-content" data-target="profile">Profile</button>
+                <button type="button" class="list-group-item list-group-item-action btn-content" data-target="account">Compte</button>
+                {% if user.profile.accountLevel == 1 %}
+                    <button type="button" class="list-group-item list-group-item-action btn-content" data-target="helper">Helper</button>
+                {% endif %}
             </div>
         </div>
-
-        <div class="col-lg-8">
+        
+        {% comment %} <div class="col-lg-8">
             <form method="POST" class="uniform" style="font-size:20px">
              {% csrf_token %}
                 {{ requestForm | crispy }}
                 {{ messageForm | crispy }}
                 <input class ="btn btn-success w-100 p-3" type="submit">
             </form>
-        </div>
+        </div> {% endcomment %}
+
         <div class="col-lg">
-            <form>
-                <img src="{% static 'HelpArc/img/default-user-image.png' %}" width="100px">
-                <p>
-                    Name: <input type="text">
-                </p>
+            <div id="profile-content">
 
-                <p>
-                    Surname: <input type="text">
-                </p>
+                <div id="profile" class="subcontent">
+                        <form method="POST" class="post-form" data-action="{% url 'profile_update' %}" enctype='multipart/form-data'>
+                        {% csrf_token %}
+                        <fieldset class="form-group">
+                            {{ profile_profileform|crispy }}
+                            {{ profile_userform|crispy }}
+                        </fieldset>
+                        <div class="form-group">
+                            <button class="btn btn-outline-info" type="submit">Valider</button>
+                        </div>
+                    </form>
+                    
+                </div>
 
-                <input class="" type="submit">
-            </form>
+                <div id="account" class="subcontent" style="display: none;">
+                    <form method="POST" class="post-form" data-action="{% url 'account_update' %}" enctype='multipart/form-data'>
+                        {% csrf_token %}
+                        <fieldset class="form-group">
+                            Email: <input type="email" name="mail" value="{{ user.email }}"/>
+                        </fieldset>
+                        <div class="form-group">
+                            <button class="btn btn-outline-info" type="submit">Valider</button>
+                        </div>
+                    </form>
+                </div>
+
+                {% if user.profile.accountLevel == 1 %}
+                    <div id="helper" class="subcontent" style="display: none;">  
+                        {% if user.profile.is_complete is False %}
+                        <div class="alert alert-danger alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                            Comme votre profil n'est pas complété, vous n'apparaissez pas dans les résultats de recherche.
+                        </div>
+                        {% endif %}
+                        <form method="POST" class="post-form" data-action="{% url 'helper_update' %}" enctype='multipart/form-data'>
+                            {% csrf_token %}
+                            
+                            <div class='skills form-control'>
+                                {{ UserTitleForm | crispy }}
+                            </div>
+                            <div id="skills-container" class="form-group">
+                                <div class='skills form-control'>
+                                    {{ formset.errors }}
+                                    {{ formset.non_field_errors }}
+                                    {{ formset.non_form_errors }}
+                                    {{ form.management_form }}
+                                    {% for f in form %}                                 
+                                        <div class="link-formset">   
+                                            
+                                            <hr style="color:black; border-color:black">  
+                                            <div class="row">
+                                                <div class="col-9">
+                                                    {{ f.technologyId | as_crispy_field}}
+                                                </div>    
+                                                <div class="col-3">
+                                                    {{ f.level | as_crispy_field}}  
+                                                </div> 
+                                                <td class="hidden">{{ f.id }}</td>
+                                            </div>
+                                        </div>              
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <input type="submit" class="btn btn-success w-100 p-3" value="Submit">
+                        </form>
+                    </div>
+
+                {% endif %}
+            </div>
         </div>
     </div>
 </div>
+<script src="{% static 'HelpArc/jquery.formset.js' %}"></script>
 
+<script>
+$('document').ready(function(){
+    $('.link-formset').formset({
+        addText: 'Add Skill',
+        deleteText: 'Remove Skill'
+    });
+});
+    
+    // Catch submit event of the form
+    $(document).on('submit', '.post-form', function(event){
+        event.preventDefault();
+        update_db($(this));
+    });
+
+    // Ajax function to insert into database
+    function update_db(form) {
+        var formdata = new FormData(form.get(0));
+
+        
+        $.ajax({
+            url : form.data('action'),
+            type : "POST",
+            data : formdata,
+            contentType: 'multipart/form-data',
+            processData: false,
+            contentType: false, 
+
+            success : function(json) {
+                console.log("AAAA")
+                if(json.res)
+                {
+                    console.log("OKAY")
+                }
+                else{
+                    console.log("OUPS")
+                }
+
+                /*console.log("worked")
+                // Add visual feedback
+                obj = JSON.parse(json.obj);
+                console.log(obj)
+                rowFunction(obj); */
+            },
+        });
+    };
+
+    // Function to hide the different forms depending on the clicked button
+    $('.btn-content').click(function() {
+        $('#profile-content').children(".subcontent").each(function (){
+            $(this).hide();
+        });
+        var target = '#' + $(this).data('target');
+        $(target).show();
+})
+
+</script>
 
 {% endblock %}

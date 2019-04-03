@@ -10,7 +10,7 @@ urlpatterns = [
     path('ajax/helpers', views.admin_helpers, name='get_helper'),
     path('ajax/helpers/accept', views.admin_helper_request_accept, name='accept_helper'),
     path('ajax/helpers/reject', views.admin_helper_request_reject, name='reject_helper'),
-    path('ajax/helpers/revoke', views.admin_helper_revoke, name='helper_revoke'),
+    path('ajax/helpers/revoke', views.admin_helper_revoke, name='revoke_helper'),
 
     #Technologies
     path('ajax/technologies', views.admin_technologies, name='get_technologies'),
